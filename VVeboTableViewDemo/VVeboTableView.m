@@ -80,13 +80,23 @@
 }
 
 //按需加载 - 如果目标行与当前行相差超过指定行数，只在目标滚动范围的前后指定3行加载。
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-    NSIndexPath *ip = [self indexPathForRowAtPoint:CGPointMake(0, targetContentOffset->y)];
-    NSIndexPath *cip = [[self indexPathsForVisibleRows] firstObject];
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    NSLog(@"targetContentOffset: %f %f", targetContentOffset->x, targetContentOffset->y);
+    NSLog(@"velocity: %f %f", velocity.x, velocity.y);
+    
+    NSIndexPath *ip = [self indexPathForRowAtPoint:CGPointMake(0, targetContentOffset->y)]; //手指触摸滑动后滚动最终停止时预期offset所在行
+    NSIndexPath *cip = [[self indexPathsForVisibleRows] firstObject]; //手指触摸滑动前现在所处的第一行offset
     NSInteger skipCount = 8;
-    if (labs(cip.row-ip.row)>skipCount) {
+    if (labs(cip.row-ip.row)>skipCount) { //手指滑动前和滑动完毕后的行数差大于8行
+        
+        //滑动完毕后的屏显行数组
         NSArray *temp = [self indexPathsForRowsInRect:CGRectMake(0, targetContentOffset->y, self.width, self.height)];
         NSMutableArray *arr = [NSMutableArray arrayWithArray:temp];
+        
+        //向上滑动
         if (velocity.y<0) {
             NSIndexPath *indexPath = [temp lastObject];
             if (indexPath.row+3<datas.count) {
@@ -94,6 +104,8 @@
                 [arr addObject:[NSIndexPath indexPathForRow:indexPath.row+2 inSection:0]];
                 [arr addObject:[NSIndexPath indexPathForRow:indexPath.row+3 inSection:0]];
             }
+            
+        //向下滑动
         } else {
             NSIndexPath *indexPath = [temp firstObject];
             if (indexPath.row>3) {
