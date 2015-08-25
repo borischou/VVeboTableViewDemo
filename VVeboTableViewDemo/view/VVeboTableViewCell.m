@@ -33,8 +33,9 @@
     if (self) {
         self.clipsToBounds = YES;
         postBGView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        [self.contentView insertSubview:postBGView atIndex:0];
+        [self.contentView insertSubview:postBGView atIndex:0]; //放在最底层
         
+        //头像，本身不改变外框形状，通过下面cornerImage覆盖露出圆形区域达到目的
         avatarView = [UIButton buttonWithType:UIButtonTypeCustom];//[[VVeboAvatarView alloc] initWithFrame:avatarRect];
         avatarView.frame = CGRectMake(SIZE_GAP_LEFT, SIZE_GAP_TOP, SIZE_AVATAR, SIZE_AVATAR);
         avatarView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
@@ -43,6 +44,7 @@
         avatarView.clipsToBounds = YES;
         [self.contentView addSubview:avatarView];
         
+        //中空圆形图片
         cornerImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SIZE_AVATAR+5, SIZE_AVATAR+5)];
         cornerImage.center = avatarView.center;
         cornerImage.image = [UIImage imageNamed:@"corner_circle@2x.png"];
